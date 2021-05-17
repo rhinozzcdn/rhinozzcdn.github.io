@@ -305,6 +305,19 @@ body .ok {
   z-index: 100; }
   body .ok:active {
     top: 397px; }
+body .share {
+  position: absolute;
+  width: 107px;
+  height: 38px;
+  left: 219px;
+  top: 394px;
+  background-image: url(https://ben7th.github.io/flappy-html5-bird/ui/images/share.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  z-index: 100; }
+  body .share:active {
+    top: 397px; }
 body .get_ready {
   position: absolute;
   width: 233px;
@@ -429,4 +442,4 @@ body .pipe {
       height: 32px;
       background-image: url(https://ben7th.github.io/flappy-html5-bird/ui/images/pipe_head_2.png);
       background-size: 100% auto;
-      background-repeat: no-repeat; }
+      background-repeat: no-repeat; } 
