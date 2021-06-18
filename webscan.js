@@ -1,6 +1,3 @@
-// Variables used by Scriptable.
-// These must be at the very top of the file. Do not edit.
-// icon-color: pink; icon-glyph: magic;
 /*
  * cross-browser/cross-platform browser-based network scanner and local ip detector
  * by samy kamkar 2020/11/07
@@ -266,6 +263,7 @@ window.scanIps = async function(ips, conf, subnet)
 {
   if (!conf) conf = { }
   if (!conf.block) conf.block = 10
+  if (conf.logger) conf.logger(`scanIps() started, subnet=${!!subnet}`)
 
   let liveIps = {}
   // scan blocks of IPs
@@ -279,6 +277,7 @@ window.scanIpsBlock = async function(ips, conf, subnet)
 {
   if (!conf) conf = { }
   if (!conf.timeout) conf.timeout = 2000
+  if (conf.logger) conf.logger(`scanIpsBlock(${ips})`)
   let promises = {}
   let liveIps = {}
   let scans = []
@@ -304,14 +303,14 @@ window.scanIpsBlock = async function(ips, conf, subnet)
     if (conf.networkCallback)
       conf.networkCallback(lip)
     if (conf.logger)
-      conf.logger(`Found host: ${lip}`)
+      conf.logger(`<b>found host: ${lip}</b> ${liveIps[lip]-scanned[lip]}ms (networkCallback called)`)
 
     // now validate which ips are actually local via webrtc
     if (conf.rtc !== false)
       await connectPeers(lip, function(tip)
       {
         if (conf.logger)
-          conf.logger(`Found host: ${tip} (potentially local)`)
+          conf.logger(`<b><span style='color:tomato;'>found LOCAL ip address: ${tip}</span> (localCallback called)</b>`)
         if (conf.localCallback)
           conf.localCallback(tip)
         liveIps[tip] = 0
@@ -362,6 +361,7 @@ window.scanIpsBlock = async function(ips, conf, subnet)
     {
       if (conf.subnetCallback)
         conf.subnetCallback(net)
+      if (conf.logger) conf.logger(`scanIps(${getSubnet(net)}, subnet=false) (subnetCallback called)`)
       Object.assign(liveIps, await scanIps(unroll_ips(getSubnet(net)+'*', 1, 254), conf))
     }
 
@@ -396,6 +396,7 @@ window.webScanAll = async function(nets, conf)
   let ips = {}
   if (!conf) conf = { }
   if (!nets) nets = subnets
+  if (conf.logger) conf.logger(`webScanAll() started`)
 
   // scan possible networks
   ips.network = await scanIps(unroll_ips(nets), conf, true)
@@ -404,7 +405,7 @@ window.webScanAll = async function(nets, conf)
   // no local ip? try once more
   if (!ips.local.length)
   {
-    if (conf.logger) conf.logger('No local IPs found, scanning once more.')
+    if (conf.logger) conf.logger('no local ips found, scanning once more')
 
     // delete old times
     scanned = {}
